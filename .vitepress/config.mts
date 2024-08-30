@@ -6,10 +6,40 @@ import { DefaultTheme } from 'vitepress/theme'
  */
 const sidebar: DefaultTheme.Sidebar = [
   {
+    collapsed: false,
     text: '开始',
     items: [
       { text: '简介', link: '/' },
       { text: '环境准备', link: '/starter' },
+    ]
+  },
+  {
+    collapsed: false,
+    text: 'Python 基础',
+    items: [
+      { text: '迭代器和可迭代对象', link: '/base/iterator' },
+    ]
+  },
+  {
+    collapsed: false,
+    text: 'Python 内置库',
+    items: [
+      { text: 'argparse', link: '/pythonlib/argparse/argparse' },
+      { text: 'collections', link: '/pythonlib/collections/collections' },
+    ]
+  },
+  {
+    collapsed: false,
+    text: 'Python 测试框架',
+    items: [
+      { text: 'Python 测试框架 Pytest', link: '/test/pytest/pytest' },
+    ]
+  },
+  {
+    collapsed: false,
+    text: '第三方库',
+    items: [
+      { text: 'tqdm', link: '/3rdparty/tqdm/tqdm' },
     ]
   },
 ]
