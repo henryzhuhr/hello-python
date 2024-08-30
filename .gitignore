@@ -1,3 +1,10 @@
+# --- Node.js ---
+node_modules/
+
+# --- Vitepress ---
+**/.vitepress/dist
+**/.vitepress/cache
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

@@ -1,0 +1,21 @@
+{
+  "name": "@henryzhuhr/hello-python",
+  "version": "1.0.0",
+  "description": "Python Learning Log",
+  "license": "Apache-2.0",
+  "author": "henryzhuhr <henryzhuhr@gmail.com> (https://github.com/henryzhuhr)",
+  "homepage": "https://henryzhuhr.github.io/hello-python",
+  "repository": "github:henryzhuhr/hello-python",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "docs:dev": "vitepress dev --host",
+    "docs:build": "vitepress build",
+    "docs:preview": "vitepress preview"
+  },
+  "devDependencies": {
+    "sass": "^1.77.8",
+    "vitepress": "^1.3.3",
+    "vue": "^3.4.38"
+  }
+}
