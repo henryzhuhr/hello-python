@@ -1,4 +1,4 @@
-name: docs
+name: Build and Deploy Static Site
 
 # 事件触发工作流程: https://docs.github.com/zh/actions/writing-workflows/choosing-when-your-workflow-runs/triggering-a-workflow#using-events-to-trigger-workflows
 on:
