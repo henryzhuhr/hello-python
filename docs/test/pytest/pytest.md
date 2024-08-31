@@ -13,49 +13,21 @@ outline: deep
 
 安装 
 ```sh
-pip3 install -U pytest
+pip install pytest
 ```
 
 ## 测试文件
 ### 单文件测试
 
-创建 `test_sample.py` 文件，测试函数以 `test_` 开头，pytest会自动找到全部测试函数，并且
-```py
-# content of test_sample.py
-def inc(x):
-    return x + 1
+创建 `src/test/pytest/test_sample.log` 文件，测试函数以 `test_` 开头，pytest会自动找到全部测试函数，并且
+<!-- 导入代码片段 -->
+<<< ../../../src/test/pytest/test_sample.py
 
+运行 `pytest src/test/pytest/test_sample.log` 进行测试，会输出测试结果
 
-def test_answer():
-    assert inc(3) == 5
-```
-
-运行 `python3 test_sample.py`
 ::: details 点击查看测试结果
-```sh
-$ python3 test_sample.py
-============================= test session starts ==============================
-platform darwin -- Python 3.8.12, pytest-7.0.1, pluggy-1.0.0
-rootdir: /home/hipy/project
-collected 1 item
-
-test_sample.py F                                                         [100%]
-
-=================================== FAILURES ===================================
-_________________________________ test_answer __________________________________
-
-    def test_answer():
->       assert inc(3) == 5
-E       assert 4 == 5
-E        +  where 4 = inc(3)
-
-test_sample.py:7: AssertionError
-=========================== short test summary info ============================
-FAILED test_sample.py::test_answer - assert 4 == 5
-============================== 1 failed in 0.01s ===============================
-```
+<<< ../../../src/test/pytest/test_sample.log
 :::
-会给出测试的详情，
 
 ### 多文件测试
 `pytest` 会测试当前目录及子目录下全部 `test_*.py` 和 `*_test.py` 文件，遵循[约定的测试目录规则](https://docs.pytest.org/en/latest/explanation/goodpractices.html#test-discovery)
