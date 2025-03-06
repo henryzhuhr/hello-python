@@ -26,6 +26,7 @@ const sidebar: DefaultTheme.Sidebar = [
     items: [
       { text: 'argparse', link: '/pythonlib/argparse/argparse' },
       { text: 'collections', link: '/pythonlib/collections/collections' },
+      { text: 'asyncio 异步编程', link: '/pythonlib/async/async' },
     ]
   },
   {
