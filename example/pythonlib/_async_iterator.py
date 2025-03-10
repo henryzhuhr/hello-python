@@ -1,5 +1,4 @@
 import asyncio
-from time import sleep
 
 
 class AsyncIterator:
@@ -54,4 +53,3 @@ asyncio.run(main_1())
 async def mock_network_stream(data):
     await asyncio.sleep(1)  # 模拟网络延迟
     return data
-

@@ -17,8 +17,8 @@ outline: deep
 
 ## 异步和协程函数
 
-::: code-group
-```python [example/pythonlib/_async_0.py]
+```python 
+# example/pythonlib/_async_0.py
 import asyncio
 
 async def hello(): 
@@ -30,7 +30,6 @@ async def main():
 
 asyncio.run(main())
 ```
-:::
 
 使用 `async def` 定义的函数被称为**协程函数 (coroutine function)** ，调用协程函数时，它不会立即执行，而是返回一个**协程对象 (coroutine object)**，例如：
 
@@ -76,8 +75,9 @@ asyncio.run(main())  # RuntimeError: Cannot run the event loop while another loo
 
 用下面一个例子来说明挂起的概念：
 
-::: code-group
-```python [example/pythonlib/_async_network.py]
+
+```python
+# example/pythonlib/_async_network.py
 import asyncio
 async def fetch_data(url):
     print(f"Fetching data from {url}")
@@ -103,7 +103,19 @@ asyncio.run(main()) # 运行时长 1s
 - 当执行到 `await asyncio.sleep(1)` 时，`fetch_data()` 协程函数会挂起，模拟网络请求的延迟。在此期间，**控制权交还给事件循环，事件循环会调度其他任务执行，从而实现并发**。 因此会先输出 `Fetching data from https://example.com`，然后事件循环会调度第二个任务、然后是第三个。
 - 等待模拟的网络请求延迟结束后，`fetch_data()` 协程函数会恢复执行，依次输出 `Data fetched from *`
 
-<!-- 这个例子中，需要注意的是，这里只消耗了1秒的时间，但是 -->
+这个例子中，需要注意的是，这里只消耗了1秒的时间，但是实际上不是并行的，而是并发的。
+
+并发和并行的区别在于：
+- **并发**：多个任务交替执行，通过事件循环调度任务，适合处理 I/O 密集型任务。在这个例子中，`fetch_data()` 协程函数会挂起，模拟网络请求的延迟，事件循环会调度其他任务执行，从而实现并发。
+- **并行**：多个任务真正同时执行，通过多线程或多进程实现，适合处理 CPU 密集型任务。
+
+I/O 密集型任务 和 CPU 密集型任务 的区别在于：
+- **I/O 密集型任务**：任务主要是等待 I/O 操作（如网络请求、文件读写、数据库查询等）完成，这些操作通常是非阻塞的，因此适合使用异步编程模型处理。
+- **CPU 密集型任务**：任务主要是进行 CPU 计算，需要大量的 CPU 运算，这些操作通常是阻塞的，因此适合使用多线程或多进程并行处理。
+
+阻塞和非阻塞的区别在于：
+- **阻塞**：任务执行时会等待某些操作完成后再继续执行，期间无法做其他事情。例如，同步 I/O 操作会阻塞程序的执行，直到 I/O 操作完成。
+- 
 
 
 ## 事件循环
@@ -113,6 +125,7 @@ asyncio.run(main()) # 运行时长 1s
 `asyncio` 中提供了`new_event_loop()` 创建一个新的事件循环，`set_event_loop()` 设置当前线程的事件循环，例如：
 
 ```python
+# example/pythonlib/_async_event_loop.py
 import asyncio
 
 async def hello():
@@ -151,8 +164,8 @@ finally:
 
 Python 3.7 引入了 [`create_task()`](https://docs.python.org/zh-cn/3.7/library/asyncio-task.html#asyncio.create_task) 函数，用于创建一个任务对象（将协程函数包装成一个任务对象），然后通过 `await` 关键字执行任务对象，使其能够在事件循环中并发执行。
 
-::: code-group 
-```python [example/pythonlib/_async_task.py]
+```python
+# example/pythonlib/_async_task.py]
 import asyncio
 
 async def task1_func():
@@ -172,16 +185,14 @@ async def main():
 
 asyncio.run(main())
 ```
-:::
 
 #### 并发执行收集结果
 
-`asyncio` 提供了 [`gather()`](https://docs.python.org/zh-cn/3.7/library/asyncio-task.html#asyncio.gather) 函数，用于并发执行多个协程函数，并收集结果。
+`asyncio` 提供了 [`gather()`](https://docs.python.org/zh-cn/3.7/library/asyncio-task.html#asyncio.gather) 函数，用于并发执行多个协程函数，并收集结果。函数参数是多个协程函数，返回一个包含所有协程函数结果的列表，列表中的元素顺序与传入的协程函数顺序一致。
 
-::: code-group
-```python [example/pythonlib/_async_1.py]
+```python
+# example/pythonlib/_async_1.py
 import asyncio
-
 async def task1(): return "Result 1"
 async def task2(): return "Result 2"
 
@@ -191,14 +202,42 @@ async def main():
 
 asyncio.run(main())
 ```
-:::
 
-`gather()` 函数接收多个协程函数作为参数，返回一个包含所有协程函数结果的列表，列表中的元素顺序与传入的协程函数顺序一致，这样就可以方便地收集多个协程函数的结果。
+还有一种写法
+```python
+async def main():
+    tasks = [task1(), task2()]
+    results = await asyncio.gather(*tasks)
+```
 
 
 ## 异步迭代器和异步上下文管理器
 
 Python 3.6 引入了异步迭代器和异步上下文管理器，用于支持异步编程。
+
+### 同步迭代器
+
+在 Python 中，迭代器是一种支持迭代协议的对象，可以使用 `for` 循环遍历其元素。迭代器对象必须实现两个方法：
+- `__iter__()`: 返回迭代器对象本身。这是迭代器协议的一部分，告诉 Python 如何获取迭代器。
+- `__next__()`: 返回下一个值，或者抛出 `StopIteration` 异常以终止迭代。
+
+```python
+# example/pythonlib/_iterator.py
+class Iterator:
+    def __init__(self, n: int):
+        self.i = 0  # 迭代器的起始值
+        self.n = n  # 迭代器的最大值
+
+    def __iter__(self):
+        return self
+
+    def __next__(self):
+        if self.i < self.n:
+            i = self.i
+            self.i += 1
+            return i
+        raise StopIteration
+```
 
 
 ### 异步迭代器
@@ -208,9 +247,8 @@ Python 3.6 引入了异步迭代器和异步上下文管理器，用于支持异
 - `__aiter__()`: 返回异步迭代器对象本身。这是异步迭代器协议的一部分，告诉 Python 如何获取迭代器。
 - `__anext__()`: 返回下一个值，或者抛出 `StopAsyncIteration` 异常以终止迭代。
 
-::: code-group
-
-```python [example/pythonlib/_async_iterator.py]
+```python
+# example/pythonlib/_async_iterator.py
 import asyncio
 
 class AsyncIterator:
@@ -228,9 +266,8 @@ class AsyncIterator:
             return i
         raise StopAsyncIteration
 ```
-:::
 
-异步迭代器 `AsyncIterator` 需要使用 `async for` `进行遍历，每次迭代时，会调用 `__anext__()` 方法，返回下一个值，直到抛出 `StopAsyncIteration` 异常。例如：
+异步迭代器 `AsyncIterator` 需要使用 `async for` 进行遍历，每次迭代时，会调用 `__anext__()` 方法，返回下一个值，直到抛出 `StopAsyncIteration` 异常。例如：
 
 ```python
 async def main():
@@ -326,3 +363,17 @@ asyncio.run(main())
 ```
 
 异步上下文管理器是一个实现了 `__aenter__()` 和 `__aexit__()` 方法的类，用于在 `async with` 语句中管理资源。`__aenter__()` 方法返回一个值，可以在 `as` 关键字后面的变量中获取到。
+
+
+## 同步原语
+
+`asyncio` 提供了一些[**同步原语**](https://docs.python.org/zh-cn/3.12/library/asyncio-sync.html#lock)，用于在异步编程中处理并发和同步问题。
+- `asyncio` 的原语不是线程安全的，不能在多个线程中同步，而应该使用 `threading` 模块提供的原语。
+- `asyncio` 的原语不支持 `timeout` 参数，需要使用 `asyncio.wait_for()` 函数设置超时。
+基本的同步原语有：
+- `asyncio.Lock`: 用于同步多个协程对共享资源的访问。
+- `asyncio.Event`: 用于协程之间的事件通知。
+- `asyncio.Condition`: 用于协程之间的条件变量。
+- `asyncio.Semaphore`: 用于控制并发访问数量。
+- `asyncio.BoundedSemaphore`: 用于控制并发访问数量，但是有上限。
+- `asyncio.Barrier`: 用于协程之间的同步屏障。
