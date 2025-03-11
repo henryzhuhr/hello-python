@@ -143,3 +143,9 @@ print("This is a long string that should be wrapped.") # fmt: skip
 ```python
 # fmt: skip; pylint; noqa
 ```
+
+
+#### Ruff
+
+
+[text](https://zhuanlan.zhihu.com/p/679246519)
