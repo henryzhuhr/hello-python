@@ -1,0 +1,30 @@
+services:
+  hello-python:
+    build:
+      context: .
+      dockerfile: dockerfiles/Dockerfile
+    image: hello-python:latest  # 构建后镜像的名称和标签   
+    environment:
+      APP: hello-python
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      - default
+    volumes:
+      - "~/.ssh:/root/.ssh:ro" # 挂载宿主机的ssh配置文件，方便推拉代码（只读）
+      - "/etc/localtime:/etc/localtime:ro" # 挂载宿主机时间到容器
+      - .:/root/hello-python
+    working_dir: /root/hello-python
+    ports:
+      - 22:22
+    # sleep infinity 用于保持容器运行，否则 vscode 无法进入容器，建议写在 .devcontainer/docker-compose.yml 文件中
+    command: sleep infinity
+
+
+# -- 网络名称，用于容器间通信
+networks:
+  default:
+    name: hello-python-network
+  
+volumes:
+  hello-python:
